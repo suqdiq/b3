@@ -216,6 +216,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
     def grab_player(self, sclient):
         """Getting playerlist via rcon players"""
         input_blob = self.console.write('players')
+        self.debug('PLAYERS  XXX: '+input_blob)
+
 
         # from this_file import parse_player_command
         players = self.parse_player_command(input_blob)
@@ -231,6 +233,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
     def grab_player2(self, client):
         """Getting playerlist via rcon players"""
         input_blob = self.console.write('players')
+        self.debug('PLAYERS  XXX: '+input_blob)
+
 
         # from this_file import parse_player_command
         players = self.parse_player_command(input_blob)

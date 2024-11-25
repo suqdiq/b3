@@ -26,7 +26,7 @@ import b3
 import re
 import b3.events
 import b3.plugin
-import urllib
+import requests
 #import ipinfo
 
 class Customauthv2Plugin(b3.plugin.Plugin):
@@ -75,8 +75,7 @@ class Customauthv2Plugin(b3.plugin.Plugin):
         if not client.pbid:
             return
         else:
-            urbanterror_url=urllib.urlopen("https://www.urbanterror.info/members/profile/%s/" % client.pbid)
-            player_page=urbanterror_url.read()
+            player_page=requests.get("https://www.urbanterror.info/members/profile/%s/" % client.pbid).content
             try:
                 auth = player_page.split('<h2><span class="userTag start">')[1].lstrip().split('</span><span class="userName">')[0]
             except:

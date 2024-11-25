@@ -1,3 +1,7 @@
+b3_db.sqlite
+b3.log
+b3.log.*
+b3_db.sqlite
 desktop.ini
 .idea/*
 *.pyc
