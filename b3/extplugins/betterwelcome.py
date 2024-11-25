@@ -27,7 +27,7 @@ import re
 import b3.events
 import b3.plugin
 import urllib
-import ipinfo
+#import ipinfo
 
 class BetterwelcomePlugin(b3.plugin.Plugin):
     requiresConfigFile = False
@@ -126,7 +126,8 @@ class BetterwelcomePlugin(b3.plugin.Plugin):
     def getCountryName(self, client):
         ip = str(client.ip)
         access_token = "get ur own from ipinfo"
-        handler = ipinfo.getHandler(access_token)
-        details = handler.getDetails(ip)
-        country = details.country
+        #handler = ipinfo.getHandler(access_token)
+        #details = handler.getDetails(ip)
+        #country = details.country
+        country = 'XXX'
         return(country)

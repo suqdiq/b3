@@ -27,7 +27,7 @@ import re
 import b3.events
 import b3.plugin
 import urllib
-import ipinfo
+#import ipinfo
 
 class Customauthv2Plugin(b3.plugin.Plugin):
     requiresConfigFile = False
@@ -86,11 +86,12 @@ class Customauthv2Plugin(b3.plugin.Plugin):
                 return(auth)
 
     def get_ip_information(self, ip):
-        access_token = 'get ur own from ipinfo'
-        handler = ipinfo.getHandler(access_token)
-        ip_address = '%s' % ip
-        details = handler.getDetails(ip_address)
-        country = details.country
+        #access_token = 'get ur own from ipinfo'
+        #handler = ipinfo.getHandler(access_token)
+        #ip_address = '%s' % ip
+        #details = handler.getDetails(ip_address)
+        #country = details.country
+        country = 'XXX'
         return(country)
 
     def get_client_ip(self, client):
