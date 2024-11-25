@@ -517,7 +517,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
                     client.delvar(self, 'autobuy')
                     client.delvar(self, 'autobuyname')
                 else:
-                    money = int(cursor.getValue('money',))
+                    try: money = int(cursor.getValue('money',))
+                    except: money = 0
                     cursor.close()
                     if weapon_modname in self.weapons:
                         self.debug('Autobuy weapon is in blueweapons')
@@ -562,7 +563,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
                     reward = 400
                     self.update_location(client, reward)
                 else:
-                    money = int(cursor.getValue('money'))
+                    try: money = int(cursor.getValue('money'))
+                    except: money = 0
                     if money == self.MAX_WALLET_MONEY:
                         cursor.close()
                         self.update_location(client)
@@ -582,7 +584,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
                     reward = 600
                     self.update_location(client, reward)
                 else:
-                    money = int(cursor.getValue('money'))
+                    try: money = int(cursor.getValue('money'))
+                    except: money = 0
                     if money == self.MAX_WALLET_MONEY:
                         cursor.close()
                         self.update_location(client)
@@ -601,7 +604,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
                 reward = 500
                 self.update_location(client, reward)
             else:
-                money = int(cursor.getValue('money'))
+                try: money = int(cursor.getValue('money'))
+                except: money = 0
                 if money == self.MAX_WALLET_MONEY:
                     cursor.close()
                     self.update_location(client)
@@ -627,7 +631,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
                     reward = 480
                     self.update_location(client, reward)
                 else:
-                    money = int(cursor.getValue('money'))
+                    try: money = int(cursor.getValue('money'))
+                    except: money = 0
                     if money == self.MAX_WALLET_MONEY:
                         cursor.close()
                         self.update_location(client)
@@ -647,7 +652,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
                     reward = 720
                     self.update_location(client, reward)
                 else:
-                    money = int(cursor.getValue('money'))
+                    try: money = int(cursor.getValue('money'))
+                    except: money = 0
                     if money == self.MAX_WALLET_MONEY:
                         cursor.close()
                         self.update_location(client)
@@ -666,7 +672,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
                 reward = 600
                 self.update_location(client, reward)
             else:
-                money = int(cursor.getValue('money'))
+                try: money = int(cursor.getValue('money'))
+                except: money = 0
                 if money == self.MAX_WALLET_MONEY:
                     cursor.close()
                     self.update_location(client)
@@ -712,7 +719,9 @@ class NewmoneyPlugin(b3.plugin.Plugin):
                 return
 
             cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % sclient.id)
-            if cursor.EOF or int(cursor.getValue('money')) == 0:
+            try: actual_money = int(cursor.getValue('money')):
+            except: actual_money = -1
+            if cursor.EOF or actual_money == 0:
                 client.message('No need to reset this player!')
                 cursor.close()
             else:
@@ -722,7 +731,9 @@ class NewmoneyPlugin(b3.plugin.Plugin):
                 self.update_target_location(sclient)
         else:
             cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % client.id)
-            if cursor.EOF or int(cursor.getValue('money')) == 0:
+            try: actual_money = int(cursor.getValue('money')):
+            except: actual_money = -1
+            if cursor.EOF or actual_money == 0:
                 client.message('No need to reset yourself!')
                 cursor.close()
             else:
@@ -755,7 +766,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
             kills = 0
             cursor.close()
         else:
-            kills = int(cursor.getValue('kills'))
+            try: kills = int(cursor.getValue('kills'))
+            except: kills = 0
             cursor.close()
             return kills
         return kills
@@ -766,7 +778,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
             scoins = 0
             cursor.close()
         else:
-            scoins = int(cursor.getValue('scoins'))
+            try: scoins = int(cursor.getValue('scoins'))
+            except: scoins = 0
             cursor.close()
             return scoins
         return scoins
@@ -779,7 +792,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
             deaths = 0
             cursor.close()
         else:
-            deaths = int(cursor.getValue('deaths'))
+            try: deaths = int(cursor.getValue('deaths'))
+            except: deaths = 0
             cursor.close()
             return deaths
         return deaths
@@ -792,7 +806,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
             kills = 0
             cursor.close()
         else:
-            kills = int(cursor.getValue('kills'))
+            try: kills = int(cursor.getValue('kills'))
+            except: kills = 0
             cursor.close()
             return kills
         return kills
@@ -805,14 +820,16 @@ class NewmoneyPlugin(b3.plugin.Plugin):
             deaths = 0
             cursor.close()
         else:
-            deaths = int(cursor.getValue('deaths'))
+            try: deaths = int(cursor.getValue('deaths'))
+            except: deaths = 0
             cursor.close()
             return deaths
         return deaths 
 
     def get_client_money(self, client):
         cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % client.id)
-        value = int(cursor.getValue('money'))
+        try: value = int(cursor.getValue('money'))
+        except: value = 0
         value2 = self.add_spaces(str(value))
         cursor.close()
         return value2
@@ -865,7 +882,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
 
     def update_target_location(self, target):
         cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % target.id)
-        value = int(cursor.getValue('money'))
+        try: value = int(cursor.getValue('money'))
+        except: value = 0
         value2 = self.add_spaces(str(value))
         scoins = self.getsupercoins(target)
         cursor.close()
@@ -886,7 +904,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
             cursor = self.console.storage.query('INSERT INTO kills (iduser, deaths) VALUES (%s , %s)' % (client.id, 0))
             cursor.close()
         else:
-            kills = int(cursor.getValue('kills'))
+            try: kills = int(cursor.getValue('kills'))
+            except: kills = 0
             cursor = self.console.storage.query('UPDATE kills SET kills = %s WHERE iduser = %s' % (kills + 1, client.id))
             cursor.close()
 
@@ -897,7 +916,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
             cursor = self.console.storage.query('INSERT INTO kills (iduser, deaths) VALUES (%s , %s)' % (target.id, 0))
             cursor.close()
         else:
-            deaths = int(cursor.getValue('deaths'))
+            try: deaths = int(cursor.getValue('deaths'))
+            except: deaths = 0
             cursor = self.console.storage.query('UPDATE kills SET deaths = %s WHERE iduser = %s' % (deaths + 1, target.id))
             cursor.close()
 
@@ -911,7 +931,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
             Bounty.reward = 0
             Bounty.tdeaths = 1
             cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % client.id)
-            money = int(cursor.getValue('money'))
+            try: money = int(cursor.getValue('money'))
+            except: money = 0
             cursor.close()
             cursor = self.console.storage.query('UPDATE money SET money = %s WHERE iduser = %s' % (money + kill_reward, client.id))
             cursor.close()
@@ -919,7 +940,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
             self.update_location(client)
         elif target.name == vampire_1 or target.name == vampire_2:
             cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % client.id)
-            money = int(cursor.getValue('money'))
+            try: money = int(cursor.getValue('money'))
+            except: money = 0
             cursor.close()
             cursor = self.console.storage.query('UPDATE money SET money = %s WHERE iduser = %s' % (money + 1500, client.id))
             cursor.close()
@@ -977,7 +999,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
             Bounty.tdeaths = 0
             self.console.say('%s ^2SURVIVED ^3 for 1 minute and took ^6%s coins ^3as a reward!' % (sclient.exactName, kill_reward))
             cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % sclient.id)
-            money = int(cursor.getValue('money'))
+            try: money = int(cursor.getValue('money'))
+            except: money = 0
             cursor.close()
             cursor = self.console.storage.query('UPDATE money SET money = %s WHERE iduser = %s' % (money + kill_reward, sclient.id))
             cursor.close()
@@ -1010,9 +1033,12 @@ class NewmoneyPlugin(b3.plugin.Plugin):
  
     def getGambleStats(self):
         cursor = self.console.storage.query('SELECT * FROM gamblestats')
-        wins = int(cursor.getValue('wins'))
-        losses = int(cursor.getValue('losses'))
-        totals = int(cursor.getValue('totals'))
+        try: wins = int(cursor.getValue('wins'))
+        except: wins = 0
+        try: losses = int(cursor.getValue('losses'))
+        except: losses = 0
+        try: totals = int(cursor.getValue('totals'))
+        except: totals = 0
         cursor.close()
         return(wins, losses, totals)
 
@@ -1151,7 +1177,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
         vampool = int(handler[0])
         minus_reward = vampool
         cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % client.id)
-        money = int(cursor.getValue('money'))
+        try: money = int(cursor.getValue('money'))
+        except: money = 0
         player = self.grab_player2(client)
         if cursor.EOF:
             client.message('^1You do not have enough coins!')
@@ -1304,7 +1331,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
                 cursor.close()
             else:
                 scoins = self.getsupercoins(sclient)
-                value = int(cursor.getValue('money'))
+                try: value = int(cursor.getValue('money'))
+                except: value = 0
                 value2 = self.add_spaces(str(value))
                 messagr = '%s ^3has: ^2%s coins ^3and ^8%s Super-Coins' % (sclient.exactName, value2, scoins)
                 cmd.sayLoudOrPM(client, messagr)
@@ -1387,7 +1415,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
                 cursor.close()
                 return
             else:
-                money = int(cursor.getValue('money'))
+                try: money = int(cursor.getValue('money'))
+                except: money = 0
                 cursor.close()
                 if money == self.MAX_WALLET_MONEY:
                     # Don't gamble if the clients money is max
@@ -1485,7 +1514,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
                 cursor.close()
                 return
             else:
-                money = int(cursor.getValue('money'))
+                try: money = int(cursor.getValue('money'))
+                except: money = 0
                 cursor.close()
                 if money >= 10000000:
                     cursor = self.console.storage.query('SELECT * FROM particles WHERE iduser = %s' % client.id)
@@ -1520,7 +1550,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
                     cursor.close()
                     return
                 else:
-                    money = int(cursor.getValue('money'))
+                    try: money = int(cursor.getValue('money'))
+                    except: money = 0
                     cursor.close()
                     if money >= 10000000:
                         cursor = self.console.storage.query('SELECT * FROM chatcolour WHERE iduser = %s' % client.id)
@@ -1656,7 +1687,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
             cursor.close()
             cmoney = 0
         else:
-            cmoney = int(cursor.getValue('money'))
+            try: cmoney = int(cursor.getValue('money'))
+            except: cmoney = 0
             cursor.close()
 
         cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % sclient.id)
@@ -1664,7 +1696,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
             cursor.close()
             smoney = 0
         else:
-            smoney = int(cursor.getValue('money'))
+            try: smoney = int(cursor.getValue('money'))
+            except: smoney = 0
             cursor.close()
 
         cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % client.id)
@@ -1672,7 +1705,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
             client.message('^1You do not have any coin')
             cursor.close()
         else:
-            money = int(cursor.getValue('money'))
+            try: money = int(cursor.getValue('money'))
+            except: money = 0
             cursor.close()
             if money >= value:
                 self.debug('has enough money')
@@ -1686,7 +1720,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
                         cursor = self.console.storage.query('INSERT INTO money (iduser, money) VALUES (%s, %s)' % (sclient.id, value))
                         cursor.close()
                     else:
-                        money = int(cursor.getValue('money'))
+                        try: money = int(cursor.getValue('money'))
+                        except: money = 0
                         cursor = self.console.storage.query('UPDATE money SET money = %s WHERE iduser = %s' % (money + value, sclient.id))
                         cursor.close()
                         value2 = self.add_spaces(str(value))
@@ -1706,7 +1741,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
                 client.message('You don\'t have any coin.')
                 cursor.close()
             else:
-                money = int(cursor.getValue('money'))
+                try: money = int(cursor.getValue('money'))
+                except: money = 0
                 cursor.close()
                 if money >= 750000:
                     self.console.storage.query('UPDATE money SET money = %s WHERE iduser = %s' % (money - 750000, client.id))
@@ -1731,7 +1767,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
                 cursor.close()
                 return scoins
             else:
-                scoins = int(cursor.getValue('scoins'))
+                try: scoins = int(cursor.getValue('scoins'))
+                except: scoins = 0
                 cursor.close()
                 return scoins
         if sclient:
@@ -1741,7 +1778,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
                 cursor.close()
                 return scoins
             else:
-                scoins = int(cursor.getValue('scoins'))
+                try: scoins = int(cursor.getValue('scoins'))
+                except: scoins = 0
                 cursor.close()
                 return scoins
         if target:
@@ -1751,7 +1789,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
                 cursor.close()
                 return scoins
             else:
-                scoins = int(cursor.getValue('scoins'))
+                try: scoins = int(cursor.getValue('scoins'))
+                except: scoins = 0
                 cursor.close()
                 return scoins
 
@@ -1761,7 +1800,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
             client.message('^1something went wrong')
             cursor.close()
         else:
-            scoins = int(cursor.getValue('scoins'))
+            try:  scoins = int(cursor.getValue('scoins'))
+            except:  scoins = 0
             cursor.close()
             self.console.storage.query('UPDATE money SET scoins = %s WHERE iduser = %s' % (scoins + 1, client.id))
 
@@ -1771,7 +1811,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
             cursor.close()
             client.message('You dont have enough coins')
         else:
-            money = int(cursor.getValue('money'))
+            try: money = int(cursor.getValue('money'))
+            except: money = 0
             cursor.close()
             if money >= 20000000:
                 self.console.storage.query('UPDATE money SET money = %s WHERE iduser = %s' % (money - 20000000, client.id))
@@ -1825,7 +1866,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
                 else:
                     self.debug('Weapon is health')
                     cursor = self.console.storage.query('SELECT * FROM money WHERE iduser= %s' % client.id)
-                    money = int(cursor.getValue('money', 0))
+                    try: money = int(cursor.getValue('money', 0))
+                    except: money = 0
                     cursor.close()
                     if money >= self.weapons[weapon]:
                         cursor = self.console.storage.query('UPDATE money SET money = %s WHERE iduser = %s' % (money - self.weapons[weapon], client.id))
@@ -1861,7 +1903,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
                     client.delvar(self, 'autobuyname')
                     return
             cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % client.id)
-            money = int(cursor.getValue('money', 0))
+            try: money = int(cursor.getValue('money', 0))
+            except: money = 0 
             cursor.close()
             if (weapon == "sr8") or (weapon == "SR8") or (weapon == "sr"):
                 if money >= 8000:
@@ -2125,7 +2168,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
         self.debug(client.team)
         if client.team != b3.TEAM_SPEC:
             cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % client.id)
-            money = int(cursor.getValue('money', 0))
+            try: money = int(cursor.getValue('money', 0))
+            except: money = 0
             cursor.close()
             available_kits = self.kits
             kit_match = list(filter(lambda x: kit.lower() in x.lower(), available_kits.keys()))
@@ -2179,7 +2223,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
                 client.message('You don\'t have any coin.')
                 cursor.close()
             else:
-                money = int(cursor.getValue('money'))
+                try: money = int(cursor.getValue('money'))
+                except: money = 0
                 cursor.close()
                 if money >= 65000:
                     self.console.storage.query('UPDATE money SET money = %s WHERE iduser = %s' % (money - 65000, client.id))
@@ -2690,7 +2735,8 @@ class NewmoneyPlugin(b3.plugin.Plugin):
                 client.message('You don\'t have enough coins')
                 cursor.close()
             else:
-                money = int(cursor.getValue('money'))
+                try:  money = int(cursor.getValue('money'))
+                except:  money = 0
                 cursor.close()
                 if money >= 1000000:
                     self.console.storage.query('UPDATE money SET money = %s WHERE iduser = %s' % (money - 1000000, client.id))
