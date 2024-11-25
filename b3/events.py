@@ -89,6 +89,7 @@ class Events:
                 ("EVT_CLIENT_THAWOUT_FINISHED", "Event client thawout finished"),
                 ("EVT_CLIENT_MELTED", "Event client melted"),
                 ("EVT_ASSIST", "Event assist"),
+                ("EVT_GAME_SCOREBOARD", "Event scoreboard displayed"),
             )
         )
 

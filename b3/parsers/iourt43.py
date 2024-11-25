@@ -76,6 +76,8 @@ class Iourt43Parser(b3.parser.Parser):
     _eventMap = {
         # 'warmup' : b3.events.EVT_GAME_WARMUP,
         # 'shutdowngame' : b3.events.EVT_GAME_ROUND_END
+        'hotpotato' : b3.events.EVT_GAME_FLAG_HOTPOTATO,
+        'warmup' : b3.events.EVT_GAME_WARMUP
     }
 
     _team_map = {
@@ -1357,7 +1359,9 @@ class Iourt43Parser(b3.parser.Parser):
     def OnShutdowngame(self, action, data=None, match=None):
         self.game.mapEnd()
         self.dump_line_format_counter()
-        return self.getEvent("EVT_GAME_EXIT", data=data)
+        #return self.getEvent("EVT_GAME_EXIT", data=data)
+        return self.getEvent("EVT_GAME_SCOREBOARD", data=data)
+
 
     def OnInitgame(self, action, data, match=None, round_start=False):
         game = self.game
