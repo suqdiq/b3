@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <settings name="b3">
+    <set name="bot_name">b3</set>
+    <set name="bot_prefix">^7d^13^7frk: </set>
+    <set name="time_format">%I:%M%p %Z %m/%d/%y</set>
+    <set name="time_zone">CET</set>
+    <set name="log_level">9</set>
+    <set name="logfile">@conf/b3.log</set>
+    <set name="parser">iourt43</set>
+    <set name="database">mysql://user:pass@localhost/b3</set>
+  </settings>
+  <settings name="server">
+    <set name="public_ip">-------------------------</set>
+    <set name="port">-------------------------</set>
+    <set name="rcon_ip">127.0.0.1</set>
+    <set name="rcon_password">-------------------------</set>
+	<set name="rcon_timeout">0.01</set>
+    <set name="delay">0.01</set>
+    <set name="lines_per_second">750</set>
+    <set name="max_line_length">100</set>
+    <set name="game_log">ur/path/to/games.log</set>
+    <set name="permban_with_frozensand">no</set>
+    <set name="tempban_with_frozensand">no</set>
+  </settings>
+  <settings name="autodoc">
+    <set name="type">html</set>
+    <set name="maxlevel">100</set>
+    <set name="destination">@conf/b3_doc.html</set>
+  </settings>
+  <settings name="update">
+    <set name="channel">stable</set>
+  </settings>
+  <settings name="messages">
+    <set name="kicked_by">^1$clientname^7 was kicked by ^2$adminname ^7$reason</set>
+    <set name="kicked">^1$clientname^7 was kicked $reason</set>
+    <set name="banned_by">^1$clientname^7 was banned by ^2$adminname^7 $reason</set>
+    <set name="banned">^1$clientname^7 was banned $reason</set>
+    <set name="temp_banned_by">^1$clientname^7 was temp banned by ^2$adminname^7 for $banduration^7 $reason</set>
+    <set name="temp_banned">^1$clientname^7 was temp banned for $banduration^7 $reason</set>
+    <set name="unbanned_by">^1$clientname^7 was un-banned by ^2$adminname^7 $reason</set>
+    <set name="unbanned">^1$clientname^7 was un-banned $reason</set>
+  </settings>
+  <settings name="plugins">
+    <set name="external_dir">@b3/extplugins</set>
+  </settings>
+  <plugins>
+    <plugin name="admin" config="@conf/plugin_admin.ini"/>
+    <plugin name="newmoney"/>
+    <plugin name="adv" config="@b3/conf/plugin_adv.xml" />
+    <plugin name="pluginmanager" config="@conf/plugin_pluginmanager.ini"/>
+    <plugin name="poweradminurt" config="@b3/conf/plugin_poweradminurt.ini"/>
+    <plugin name="customgunmoney"/>
+    <plugin name="fixbots"/>
+    <plugin name="welcome" config="@conf/plugin_welcome.ini"/>
+    <plugin name="spree" config="@conf/plugin_spree.ini"/>
+    <plugin name="chatlogger"/>
+    <plugin name="discord" config="@b3/extplugins/conf/discord.xml"/>
+    <plugin name="permamute"/>
+    <plugin name="vpnblocker"/>
+    <plugin name="customauthv2"/>
+    <plugin name="customvote"/>
+    <plugin name="maprotator"/>
+    <plugin name="betterwelcome"/>
+  </plugins>
+</configuration>
