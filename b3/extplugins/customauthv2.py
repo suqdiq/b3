@@ -124,7 +124,8 @@ class Customauthv2Plugin(b3.plugin.Plugin):
                     else:
                         self.update_auth(client)
                 else:
-                    counter = int(cursor.getValue('counter'))
+                    try: counter = int(cursor.getValue('counter'))
+                    except: counter = 0 
                     if counter == 1:
                         cursor = self.console.storage.query('DELETE FROM customauth WHERE iduser = %s' % client.id)
                         cursor.close()

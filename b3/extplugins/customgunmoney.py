@@ -39,8 +39,6 @@ class CustomgunmoneyPlugin(b3.plugin.Plugin):
 
     greeting_times = {}
 
-
-
     def onStartup(self):
         self.GAME_PATH = self.console.config.getpath('server', 'game_log').replace('games.log', "")
         self._adminPlugin = self.console.getPlugin('admin')
@@ -48,10 +46,6 @@ class CustomgunmoneyPlugin(b3.plugin.Plugin):
             # Can't start without the admin plugin
             self.error('Could not find admin plugin')
             return
-
-        # Registering Events
-        self.registerEvent(self.console.getEventID('EVT_GAME_ROUND_END'), self.onRoundend2)
-        self.registerEvent(self.console.getEventID('EVT_CLIENT_JOIN'), self.onChange)
 
         # Registering commands
         self._adminPlugin.registerCommand(self, 'buylist', 0, self.cmd_buylist)
@@ -73,6 +67,10 @@ class CustomgunmoneyPlugin(b3.plugin.Plugin):
         self._adminPlugin.registerCommand(self, 'demo', 20, self.cmd_demo)
         self._adminPlugin.registerCommand(self, 'mute', 20, self.cmd_pamute)
         self._adminPlugin.registerCommand(self, 'spec', 20, self.cmd_spec)
+
+        # Registering Events
+        self.registerEvent(self.console.getEventID('EVT_GAME_ROUND_END'), self.onRoundend2)
+        self.registerEvent(self.console.getEventID('EVT_CLIENT_JOIN'), self.onChange)
 
     ####################################################################################################################
     #                                                                                                                  #

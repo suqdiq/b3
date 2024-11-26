@@ -165,7 +165,7 @@ class MaprotatorPlugin(b3.plugin.Plugin):
         botcount = self.maps[currmap]
 
         self.console.write('bot_minplayers %s' % botcount)
-        self.setNextMap()
+        self.setNextMap(nextmap)
         message = "^5Nextmap: ^6%s ^3with ^5[^6%s^5] ^2Bots" % (nextmap, nextmap_botcount)
         t = Timer(40, self.announceNextmap, (message, ))
         t.start()
@@ -204,8 +204,9 @@ class MaprotatorPlugin(b3.plugin.Plugin):
     def announceNextmap(self, message):
         self.console.say(message)
 
-    def setNextMap(self):
-        fileloc = "%s/setnextmap_helper.txt" % self.GAME_PATH
-        with open(fileloc, "w") as file:
-            file.write("g_nextmap %s" % self.global_nextmap)
-        self.console.write("exec setnextmap_helper.txt")
+    def setNextMap(self,nextmap):
+        self.console.write("g_nextmap %s"%nextmap)
+        #fileloc = "%s/setnextmap_helper.txt" % self.GAME_PATH
+        #with open(fileloc, "w") as file:
+        #    file.write("g_nextmap %s" % self.global_nextmap)
+        #self.console.write("exec setnextmap_helper.txt")

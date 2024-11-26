@@ -113,6 +113,8 @@ class BetterwelcomePlugin(b3.plugin.Plugin):
         if not client.pbid:
             return
         else:
+            return("") 
+            ## code below is disabled
             player_page = requests.get("https://www.urbanterror.info/members/profile/%s/" % client.pbid).content
 
             try:
@@ -124,8 +126,8 @@ class BetterwelcomePlugin(b3.plugin.Plugin):
                 return(auth)
 
     def getCountryName(self, client):
-        ip = str(client.ip)
-        access_token = "get ur own from ipinfo"
+        #ip = str(client.ip)
+        #access_token = "get ur own from ipinfo"
         #handler = ipinfo.getHandler(access_token)
         #details = handler.getDetails(ip)
         #country = details.country

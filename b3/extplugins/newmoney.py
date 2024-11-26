@@ -188,6 +188,21 @@ class NewmoneyPlugin(b3.plugin.Plugin):
         self._adminPlugin.registerCommand(self, 'gamblestats', 0, self.cmd_gamblestats, 'odds')
         self._adminPlugin.registerCommand(self, 'attach', 0, self.cmd_attachplayer, 'turret')
 
+    def spendit(self,client, price):
+      cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % client.id)
+      if cursor.EOF:
+        client.message('You don\'t have any coin.')
+        cursor.close()
+        return false
+      else:
+        try: money = int(cursor.getValue('money'))
+        except: money = 0
+        cursor.close()
+        if money >= price:
+          minus_reward = price 
+          self.update_minus_location(client, minus_reward)
+          return true
+
     ####
     # Getting player team
 
@@ -278,7 +293,7 @@ class NewmoneyPlugin(b3.plugin.Plugin):
     def onAuth(self, event):
         client = event.client
         if client.bot:
-            self.debug('Bot')
+            self.debug('XXX Bot')
         else:
             client.setvar(self, 'autobuyname')
 
@@ -413,34 +428,11 @@ class NewmoneyPlugin(b3.plugin.Plugin):
         if self.rules.nades == True:
             self.console.write("gw %s he 10 2" % client.cid)
         if self.rules.respawndisarm is True:
-            string1 = 'removeweapon %s deagle' % client.name
-            string2 = 'removeweapon %s beretta' % client.name
-            string3 = 'removeweapon %s magnum' % client.name
-            string4 = 'removeweapon %s glock' % client.name
-            string5 = 'removeweapon %s colt' % client.name
-            fin = open(self.GAME_PATH + "restrictspawn.txt", "rt")
-            data = fin.read()
-            data = data.replace('XDATA1', string1)
-            data = data.replace('XDATA2', string2)
-            data = data.replace('XDATA3', string3)
-            data = data.replace('XDATA4', string4)
-            data = data.replace('XDATA5', string5)
-            fin.close()
-            fin = open(self.GAME_PATH + "restrictspawn.txt", "wt")
-            fin.write(data)
-            fin.close()
-            self.console.write('exec restrictspawn.txt')
-            fin = open(self.GAME_PATH + "restrictspawn.txt", "rt")
-            data = fin.read()
-            data = data.replace(string1, 'XDATA1')
-            data = data.replace(string2, 'XDATA2')
-            data = data.replace(string3, 'XDATA3')
-            data = data.replace(string4, 'XDATA4')
-            data = data.replace(string5, 'XDATA5')
-            fin.close()
-            fin = open(self.GAME_PATH + "restrictspawn.txt", "wt")
-            fin.write(data)
-            fin.close()
+            self.console.write("removeweapon %s deagle" % client.name)
+            self.console.write("removeweapon %s beretta" % client.name)
+            self.console.write("removeweapon %s magnum" % client.name)
+            self.console.write("removeweapon %s glock" % client.name)
+            self.console.write("removeweapon %s colt" % client.name)
 
         if client.bot:
             if self.rules.superbots == True:
@@ -451,33 +443,40 @@ class NewmoneyPlugin(b3.plugin.Plugin):
                 string5 = 'removeweapon %s colt' % client.name
                 string6 = 'gw %s fstod' % client.name
                 string7 = 'gw %s hk69 255 255' % client.name
-                fin = open(self.GAME_PATH + "superbots.txt", "rt")
-                data = fin.read()
-                data = data.replace('XDATA1', string1)
-                data = data.replace('XDATA2', string2)
-                data = data.replace('XDATA3', string3)
-                data = data.replace('XDATA4', string4)
-                data = data.replace('XDATA5', string5)
-                data = data.replace('XDATA6', string6)
-                data = data.replace('XDATA7', string7)
-                fin.close()
-                fin = open(self.GAME_PATH + "superbots.txt", "wt")
-                fin.write(data)
-                fin.close()
-                self.console.write('exec superbots.txt')
-                fin = open(self.GAME_PATH + "superbots.txt", "rt")
-                data = fin.read()
-                data = data.replace(string1, 'XDATA1')
-                data = data.replace(string2, 'XDATA2')
-                data = data.replace(string3, 'XDATA3')
-                data = data.replace(string4, 'XDATA4')
-                data = data.replace(string5, 'XDATA5')
-                data = data.replace(string6, 'XDATA6')
-                data = data.replace(string7, 'XDATA7')
-                fin.close()
-                fin = open(self.GAME_PATH + "superbots.txt", "wt")
-                fin.write(data)
-                fin.close()
+                self.console.write(string1)
+                self.console.write(string2)
+                self.console.write(string3)
+                self.console.write(string4)
+                self.console.write(string5)
+                self.console.write(string6)
+                self.console.write(string7)
+#                fin = open(self.GAME_PATH + "superbots.txt", "rt")
+#                data = fin.read()
+#                data = data.replace('XDATA1', string1)
+#                data = data.replace('XDATA2', string2)
+#                data = data.replace('XDATA3', string3)
+#                data = data.replace('XDATA4', string4)
+#                data = data.replace('XDATA5', string5)
+#                data = data.replace('XDATA6', string6)
+#                data = data.replace('XDATA7', string7)
+#                fin.close()
+#                fin = open(self.GAME_PATH + "superbots.txt", "wt")
+#                fin.write(data)
+#                fin.close()
+#                self.console.write('exec superbots.txt')
+#                fin = open(self.GAME_PATH + "superbots.txt", "rt")
+#                data = fin.read()
+#                data = data.replace(string1, 'XDATA1')
+#                data = data.replace(string2, 'XDATA2')
+#                data = data.replace(string3, 'XDATA3')
+#                data = data.replace(string4, 'XDATA4')
+#                data = data.replace(string5, 'XDATA5')
+#                data = data.replace(string6, 'XDATA6')
+#                data = data.replace(string7, 'XDATA7')
+#                fin.close()
+#                fin = open(self.GAME_PATH + "superbots.txt", "wt")
+#                fin.write(data)
+#                fin.close()
             else:
                 result = randint(1, 100)
                 if result <= 7:
@@ -522,19 +521,20 @@ class NewmoneyPlugin(b3.plugin.Plugin):
                     cursor.close()
                     if weapon_modname in self.weapons:
                         self.debug('Autobuy weapon is in blueweapons')
-                        if money >= self.weapons[weapon_modname]:
-                            cursor = self.console.storage.query('UPDATE money SET money = %s WHERE iduser = %s' % (money - self.weapons[weapon_modname], client.id))
-                            cursor.close()
+                        #if money >= self.weapons[weapon_modname]:
+                        if self.spendit(client,self.weapons[weapon_modname]):
+                            #cursor = self.console.storage.query('UPDATE money SET money = %s WHERE iduser = %s' % (money - self.weapons[weapon_modname], client.id))
+                            #cursor.close()
                             if (weapon_modname == "vest") or (weapon_modname == "nvg") or (weapon_modname == "silencer") or (weapon_modname == "laser") or (weapon_modname == "helmet"):
                                 self.console.write("gi %s %s" % (client.cid, weapon_modname))
                                 client.message('^5Autobuying ^6%s' % weapon_exactname)
-                                minus_reward = self.weapons[weapon_modname]
-                                self.update_minus_location(client, minus_reward)
+                            #    minus_reward = self.weapons[weapon_modname]
+                            #    self.update_minus_location(client, minus_reward)
                             else:
                                 self.console.write("gw %s %s" % (client.cid, weapon_modname))
                                 client.message('^5Autobuying ^6%s' % weapon_exactname)
-                                minus_reward = self.weapons[weapon_modname]
-                                self.update_minus_location(client, minus_reward)
+                            #    minus_reward = self.weapons[weapon_modname]
+                            #    self.update_minus_location(client, minus_reward)
                         else:
                             client.message('You don\'t have enough coins.')
                             client.delvar(self, 'autobuy')
@@ -2218,45 +2218,29 @@ class NewmoneyPlugin(b3.plugin.Plugin):
         if (self.console.time() - last) < 120:
             client.message('You can only use this command every 2 minutes')
         else:
-            cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % client.id)
-            if cursor.EOF:
-                client.message('You don\'t have any coin.')
-                cursor.close()
+            if self.spendit(client,65000):
+              self.console.write('givebullets %s 150' % client.name)
+              client.message('^3Added ^2150 rounds ^3to your gun')
+              client.setvar(self, 'delay_ammo', self.console.time())
             else:
-                try: money = int(cursor.getValue('money'))
-                except: money = 0
-                cursor.close()
-                if money >= 65000:
-                    self.console.storage.query('UPDATE money SET money = %s WHERE iduser = %s' % (money - 65000, client.id))
-                    self.console.write('givebullets %s 150' % client.name)
-                    client.message('^3Added ^2150 rounds ^3to your gun')
-                    client.setvar(self, 'delay_ammo', self.console.time())
-                    minus_reward = 65000
-                    self.update_minus_location(client, minus_reward)
-                else:
-                    client.message('You don\'t have enough coins')
+              client.message('You don\'t have enough coins')
+
 
     def cmd_clips(self, data, client, cmd=None):
+
         last = client.var(self, 'delay_clips', 0).value
+
         if (self.console.time() - last) < 120:
             client.message('You can only use this command every 60 seconds')
         else:
-            cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % client.id)
-            if cursor.EOF:
-                client.message('You don\'t have any coin.')
-                cursor.close()
-            else:
-                money = int(cursor.getValue('money'))
-                cursor.close()
-                if money >= 45000:
-                    self.console.storage.query('UPDATE money SET money = %s WHERE iduser = %s' % (money - 45000, client.id))
+            if self.spendit(client,45000):
                     self.console.write('giveclips %s 50' % client.name)
                     client.message('^3Added ^250 clips ^3to your gun')
                     client.setvar(self, 'delay_clips', self.console.time())
-                    minus_reward = 45000
-                    self.update_minus_location(client, minus_reward)
-                else:
-                    client.message('You don\'t have enough coins')
+            else:
+              client.message('You don\'t have enough coins')
+
+            
 
     def cmd_maptp(self, data, client, cmd=None):
         maps = {
@@ -2286,52 +2270,31 @@ class NewmoneyPlugin(b3.plugin.Plugin):
         if (self.console.time() - last) < 600:
             client.message('^3You can only use this command every 10 minutes')
         else:
-            cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % client.id)
-            if cursor.EOF:
-                client.message('You don\'t have any coin.')
-                cursor.close()
+            if self.spendit(client,50000):
+              self.console.write('teleport %s %s' % (client.cid, cord))
+              client.setvar(self, 'delay_maptp', self.console.time())
             else:
-                money = int(cursor.getValue('money'))
-                cursor.close()
-                if money >= 50000:
-                    self.console.storage.query('UPDATE money SET money = %s WHERE iduser = %s' % (money - 50000, client.id))
-                    self.console.write('teleport %s %s' % (client.cid, cord))
-                    client.setvar(self, 'delay_maptp', self.console.time())
-                    minus_reward = 50000
-                    self.update_minus_location(client, minus_reward)
-                else:
-                    client.message('You don\'t have enough coins')
+              client.message('You don\'t have enough coins')
 
     def cmd_disarm(self, data, client, cmd=None):
         """
         !disarm
         """
-        cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = "%s"' % client.id)
-        if not cursor or cursor.EOF:
-            client.message('^7You dont have any coin.')
-            cursor.close()
-            return
         if self.rules.restrict_disarm is True:
-            client.message('^5!disarm ^3has been used on this map already.')
-            cursor.close()
-            return
-        money = int(cursor.getValue('money'))
-        cursor.close()
-        if money > 500000:
-            self.console.storage.query('UPDATE money SET money = %s WHERE iduser = "%s"' % (money - 500000, client.id))
-            self.console.write('exec disarm2.txt')
-            self.console.say('%s ^3has ^1disarmed ^5EVERYONE!' % client.exactName)
-            self.console.write('bigtext "%s ^1disarmed ^5EVERYONE!"' % client.exactName)
-            minus_reward = 500000
-            self.update_minus_location(client, minus_reward)
-            self.rules.buying = False
-            self.rules.respawndisarm = True
-            self.rules.restrict_disarm = True
-            xtimer = Timer(30, self.reset_restrictions)
-            xtimer.start()
-            self.console.say('^5!buy ^3has been ^1disabled ^3 for ^630 seconds.')
+          client.message('^5!disarm ^3has been used on this map already.')
+          return
+        if self.spendit(client,500000):
+          self.console.write('exec disarm2.txt')
+          self.console.say('%s ^3has ^1disarmed ^5EVERYONE!' % client.exactName)
+          self.console.write('bigtext "%s ^1disarmed ^5EVERYONE!"' % client.exactName)
+          self.rules.buying = False
+          self.rules.respawndisarm = True
+          self.rules.restrict_disarm = True
+          xtimer = Timer(30, self.reset_restrictions)
+          xtimer.start()
+          self.console.say('^5!buy ^3has been ^1disabled ^3 for ^630 seconds.')
         else:
-            client.message('You dont have enough coins. Your coins are: %s' % money)
+          client.message('You dont have enough coins. Your coins are: %s' % money)
 
     def reset_restrictions(self):
         self.rules.buying = True
@@ -2345,44 +2308,24 @@ class NewmoneyPlugin(b3.plugin.Plugin):
         if (self.console.time() - last) < 60:
             client.message('You can only use this command once a minute')
         else:
-            cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % client.id)
-            if cursor.EOF:
-                client.message('You don\'t have any coin.')
-                cursor.close()
-            else:
-                money = int(cursor.getValue('money'))
-                cursor.close()
-                if money >= 25000:
-                    self.console.storage.query('UPDATE money SET money = %s WHERE iduser = %s' % (money - 25000, client.id))
-                    self.console.write("exec lol.txt")
-                    self.console.write('bigtext "%s ^3is laughing out loud!' % client.exactName)
-                    minus_reward = 25000
-                    self.update_minus_location(client, minus_reward)
-                    client.setvar(self, 'delay_laugh', self.console.time())
-                else:
-                    client.message('You don\'t have enough coins')
+          if self.spendit(client,25000):
+            self.console.write("exec lol.txt")
+            self.console.write('bigtext "%s ^3is laughing out loud!' % client.exactName)
+            client.setvar(self, 'delay_laugh', self.console.time())
+          else:
+            client.message('You don\'t have enough coins')
 
     def cmd_heal(self, data, client, cmd=None):
         last = client.var(self, 'delay_healing', 0).value
         if (self.console.time() - last) < 4:
             client.message('^3You can only use this command every 4 seconds')
         else:
-            cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % client.id)
-            if cursor.EOF:
-                client.message('You don\'t have any coin.')
-                cursor.close()
-            else:
-                money = int(cursor.getValue('money'))
-                cursor.close()
-                if money >= 15000:
-                    self.console.storage.query('UPDATE money SET money = %s WHERE iduser = %s' % (money - 15000, client.id))
-                    self.console.write('addhealth %s 100' % client.name)
-                    minus_reward = 15000
-                    self.update_minus_location(client, minus_reward)
-                    client.message('^3You\'ve bought ^2+100 health!')
-                    client.setvar(self, 'delay_healing', self.console.time())
-                else:
-                    client.message('You don\'t have enough coins')
+          if self.spendit(client,15000):
+            self.console.write('addhealth %s 100' % client.name)
+            client.message('^3You\'ve bought ^2+100 health!')
+            client.setvar(self, 'delay_healing', self.console.time())
+          else:
+            client.message('You don\'t have enough coins')
 
     def cmd_nuke(self, data, client, cmd=None):
         m = self._adminPlugin.parseUserCmd(data)
@@ -2398,21 +2341,11 @@ class NewmoneyPlugin(b3.plugin.Plugin):
         if (self.console.time() - last) < 300:
             client.message('You can only use this command every 5 minutes')
         else:
-            cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % client.id)
-            if cursor.EOF:
-                client.message('You don\'t have enough coins')
-                cursor.close()
-            else:
-                money = int(cursor.getValue('money'))
-                cursor.close()
-                if money >= 250000:
-                    self.console.storage.query('UPDATE money SET money = %s WHERE iduser = %s' % (money - 250000, client.id))
-                    self.console.write('nuke %s' % sclient.name)
-                    minus_reward = 250000
-                    self.update_minus_location(client, minus_reward)
-                    client.setvar(self, 'delay_nuke', self.console.time())
-                else:
-                    client.message('You don\'t have enough coins')   
+          if self.spendit(client,250000):
+            self.console.write('nuke %s' % sclient.name)
+            client.setvar(self, 'delay_nuke', self.console.time())
+          else:
+            client.message('You don\'t have enough coins')   
 
     def cmd_freeze(self, data, client, cmd=None):
         m = self._adminPlugin.parseUserCmd(data)
@@ -2428,49 +2361,29 @@ class NewmoneyPlugin(b3.plugin.Plugin):
         if (self.console.time() - last) < 300:
             client.message('You can only use this command every 5 minutes')
         else:
-            cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % client.id)
-            if cursor.EOF:
-                client.message('You don\'t have enough coins')
-                cursor.close()
-            else:
-                money = int(cursor.getValue('money'))
-                cursor.close()
-                if money >= 550000:
-                    self.console.storage.query('UPDATE money SET money = %s WHERE iduser = %s' % (money - 550000, client.id))
-                    self.console.write('freeze %s' % sclient.name)
-                    minus_reward = 550000
-                    self.update_minus_location(client, minus_reward)
-                    tounfreeze = sclient.name
-                    client.message('^3You\'ve ^5frozen ^3%s for ^630 seconds!' % sclient.name)
-                    sclient.message('^3You were ^5frozen ^3by %s for ^630 seconds' % client.exactName)
-                    client.setvar(self, 'delay_freeze', self.console.time())
-                    t = Timer(30, self.remove_freeze_mode, (tounfreeze, ))
-                    t.start()
-                else:
-                    client.message('You don\'t have enough coins')
+          if self.spendit(client,550000):
+            self.console.write('freeze %s' % sclient.name)
+            tounfreeze = sclient.name
+            client.message('^3You\'ve ^5frozen ^3%s for ^630 seconds!' % sclient.name)
+            sclient.message('^3You were ^5frozen ^3by %s for ^630 seconds' % client.exactName)
+            client.setvar(self, 'delay_freeze', self.console.time())
+            t = Timer(30, self.remove_freeze_mode, (tounfreeze, ))
+            t.start()
+          else:
+            client.message('You don\'t have enough coins')
 
     def cmd_serverslap(self, data, client, cmd=None):
         last = client.var(self, 'delay_serverslap', 0).value
         if (self.console.time() - last) < 1200:
             client.message('^3You can only use this command every 20 minutes')
         else:
-            cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % client.id)
-            if cursor.EOF:
-                client.message('You don\'t have any coin.')
-                cursor.close()
-            else:
-                money = int(cursor.getValue('money'))
-                cursor.close()
-                if money >= 1000000:
-                    self.console.storage.query('UPDATE money SET money = %s WHERE iduser = %s' % (money - 1000000, client.id))
-                    self.console.say( "%s ^1slapped everyone! ^3Say thanks!!" % client.exactName)
-                    self.console.write("exec slap.txt")
-                    minus_reward = 1000000
-                    self.update_minus_location(client, minus_reward)
-                    self.console.write('bigtext "%s ^1slapped ^3everyone!' % client.exactName)
-                    client.setvar(self, 'delay_serverslap', self.console.time())
-                else:
-                    client.message('You don\'t have enough coins')
+          if self.spendit(client,1000000):
+            self.console.say( "%s ^1slapped everyone! ^3Say thanks!!" % client.exactName)
+            self.console.write("exec slap.txt")
+            self.console.write('bigtext "%s ^1slapped ^3everyone!' % client.exactName)
+            client.setvar(self, 'delay_serverslap', self.console.time())
+          else:
+            client.message('You don\'t have enough coins')
 
     def cmd_nades(self, data, client, cmd=None):
         cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % client.id)
@@ -2478,27 +2391,19 @@ class NewmoneyPlugin(b3.plugin.Plugin):
             client.message('^5!nades ^3has been used on this map already.')
             cursor.close()
             return
-        if cursor.EOF:
-            client.message('You don\'t have any coin.')
-            cursor.close()
         else:
-            money = int(cursor.getValue('money'))
-            cursor.close()
-            if money >= 500000:
-                self.console.storage.query('UPDATE money SET money = %s WHERE iduser = %s' % (money - 500000, client.id))
-                self.console.write("exec nades.txt")
-                minus_reward = 500000
-                self.update_minus_location(client, minus_reward)
-                self.console.write('bigtext "%s ^2bought ^5nades for everbody ^3for ^2500.000 coins!' % client.exactName)
-                self.rules.buying = False
-                self.rules.restrict_nades = True
-                self.rules.respawndisarm = True
-                self.rules.nades = True
-                xtimer = Timer(60, self.reset_restrictions)
-                xtimer.start()
-                self.console.say('^5!buy ^3has been ^1disabled ^3 for ^660 seconds.')
-            else:
-                client.message('You don\'t have enough coins')
+          if self.spendit(client,500000):
+            self.console.write("exec nades.txt")
+            self.console.write('bigtext "%s ^2bought ^5nades for everbody ^3for ^2500.000 coins!' % client.exactName)
+            self.rules.buying = False
+            self.rules.restrict_nades = True
+            self.rules.respawndisarm = True
+            self.rules.nades = True
+            xtimer = Timer(60, self.reset_restrictions)
+            xtimer.start()
+            self.console.say('^5!buy ^3has been ^1disabled ^3 for ^660 seconds.')
+          else:
+            client.message('You don\'t have enough coins')
 
     def cmd_slick(self, data, client, cmd=None):
         cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % client.id)
@@ -2506,24 +2411,15 @@ class NewmoneyPlugin(b3.plugin.Plugin):
             client.message('^5!slick ^3has been used on this map already.')
             cursor.close()
             return
-        if cursor.EOF:
-            client.message('You don\'t have any coin.')
-            cursor.close()
+        if self.spendit(client,500000):
+          self.console.write("mod_slickSurfaces 1")
+          self.console.write('bigtext "^5Icy ^7Surfaces [^2ON^7]"')
+          self.rules.restrict_slick = True
+          xtimer = Timer(30, self.reset_slick)
+          xtimer.start()
+          self.console.write('^5!buy ^3has been ^1disabled ^3 for ^630 seconds.')
         else:
-            money = int(cursor.getValue('money'))
-            cursor.close()
-            if money >= 500000:
-                self.console.storage.query('UPDATE money SET money = %s WHERE iduser = %s' % (money - 500000, client.id))
-                minus_reward = 500000
-                self.update_minus_location(client, minus_reward)
-                self.console.write("mod_slickSurfaces 1")
-                self.console.write('bigtext "^5Icy ^7Surfaces [^2ON^7]"')
-                self.rules.restrict_slick = True
-                xtimer = Timer(30, self.reset_slick)
-                xtimer.start()
-                self.console.write('^5!buy ^3has been ^1disabled ^3 for ^630 seconds.')
-            else:
-                client.message('You don\'t have enough coins')
+          client.message('You don\'t have enough coins')
 
     def reset_slick(self):
         self.console.write("mod_slickSurfaces 0")
