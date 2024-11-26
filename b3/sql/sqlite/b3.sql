@@ -2,7 +2,7 @@
 CREATE TABLE IF NOT EXISTS `votedplayers` (
   `id` INTEGER PRIMARY KEY AUTOINCREMENT,
   `iduser` INTEGER NOT NULL,
-  `mapname` VARCHAR(512) NOT NULL
+  `mapname` VARCHAR(512)
 );
 
 
@@ -22,30 +22,30 @@ CREATE TABLE IF NOT EXISTS `pbdisarm` (
 CREATE TABLE IF NOT EXISTS `particles` (
   `id` INTEGER PRIMARY KEY AUTOINCREMENT,
   `iduser` INTEGER NOT NULL,
-  `status` VARCHAR(8) NOT NULL
+  `status` VARCHAR(8)
 );
 
 
 CREATE TABLE IF NOT EXISTS `mapstats` (
   `id` INTEGER PRIMARY KEY AUTOINCREMENT,
   `mapname` VARCHAR(512) NOT NULL,
-  `likes` INTEGER NOT NULL,
-  `dislikes` INTEGER NOT NULL
+  `likes` INTEGER,
+  `dislikes` INTEGER
 );
 
 
 CREATE TABLE IF NOT EXISTS `kills` (
   `id` INTEGER PRIMARY KEY AUTOINCREMENT,
   `iduser` INTEGER NOT NULL,
-  `kills` INTEGER NOT NULL,
-  `deaths` INTEGER NOT NULL
+  `kills` INTEGER,
+  `deaths` INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS `gamblestats` (
   `id` INTEGER PRIMARY KEY AUTOINCREMENT,
-  `totals` INTEGER NOT NULL,
-  `wins` INTEGER NOT NULL,
-  `losses` INTEGER NOT NULL
+  `totals` INTEGER,
+  `wins` INTEGER,
+  `losses` INTEGER
 );
 
 
@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS `customauth` (
   `iduser` INTEGER NOT NULL,
   `country_short` VARCHAR(32) NOT NULL DEFAULT 'XXX',
   `clan_tag` VARCHAR(32) NOT NULL,
-  `counter` INTEGER NOT NULL
+  `counter` INTEGER 
 );
 
 CREATE TABLE IF NOT EXISTS `chatcolour` (
@@ -79,8 +79,8 @@ CREATE TABLE IF NOT EXISTS `chatcolour` (
 CREATE TABLE IF NOT EXISTS `money` (
   `id` INTEGER PRIMARY KEY AUTOINCREMENT,
   `iduser` INTEGER NOT NULL,
-  `money` INTEGER NOT NULL,
-  `scoins` INTEGER NOT NULL
+  `money` INTEGER,
+  `scoins` INTEGER
 );
 
 
