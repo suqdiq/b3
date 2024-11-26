@@ -161,8 +161,14 @@ class MaprotatorPlugin(b3.plugin.Plugin):
         nextmap = random.choice(list(self.maps))
 
         self.global_nextmap = nextmap
-        nextmap_botcount = self.maps[nextmap]
-        botcount = self.maps[currmap]
+        if nextmap in self.maps.keys():
+          nextmap_botcount = self.maps[nextmap]
+        else:
+          nextmap_botcount = 10
+        if currmap in self.maps.keys():
+          botcount = self.maps[currmap]
+        else:
+          botcount = 10
 
         self.console.write('bot_minplayers %s' % botcount)
         self.setNextMap(nextmap)
