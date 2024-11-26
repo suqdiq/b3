@@ -178,7 +178,10 @@ class MaprotatorPlugin(b3.plugin.Plugin):
 
     def onRoundend(self, event):
         nextmapname = self.console.getNextMap()
-        message = "^5Nextmap: ^6%s ^3with ^5[^6%s^5] ^2Bots" % (nextmapname, self.maps[nextmapname])
+        botcount=10
+        try: botcount=self.maps[nextmapname]
+        except: pass
+        message = "^5Nextmap: ^6%s ^3with ^5[^6%s^5] ^2Bots" % (nextmapname, botcount)
         self.console.say(message)
 
     ####################################################################################################################
@@ -189,7 +192,15 @@ class MaprotatorPlugin(b3.plugin.Plugin):
 
     def cmd_mapinfo(self, data, client, cmd=None):
         mapname = self.getCurrentMapname()
-        self.console.say("^5Current map: ^6%s ^3with ^5[^6%s^5] ^2Bots" % (mapname, self.maps[mapname]))
+
+        botcount=10
+        nextmap_botcount=10
+
+        try: botcount=self.maps[nextmapname]
+        except: pass
+
+        self.console.say("^5Current map: ^6%s ^3with ^5[^6%s^5] ^2Bots" % (mapname, botcount))
+
         try:
             x = self.maps[self.global_nextmap]
         except:
