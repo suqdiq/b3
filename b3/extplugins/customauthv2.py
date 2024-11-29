@@ -27,13 +27,15 @@ import re
 import b3.events
 import b3.plugin
 import requests
-#import ipinfo
+import GeoIP
 
 class Customauthv2Plugin(b3.plugin.Plugin):
     requiresConfigFile = False
 
     #Getting Plugin admin (cannot register commands without it)
     def onStartup(self):
+        self.gi = GeoIP.new(GeoIP.GEOIP_MEMORY_CACHE)
+
         self._adminPlugin = self.console.getPlugin('admin')
         if not self._adminPlugin:
             self.error('Could not find admin plugin')
@@ -85,12 +87,7 @@ class Customauthv2Plugin(b3.plugin.Plugin):
                 return(auth)
 
     def get_ip_information(self, ip):
-        #access_token = 'get ur own from ipinfo'
-        #handler = ipinfo.getHandler(access_token)
-        #ip_address = '%s' % ip
-        #details = handler.getDetails(ip_address)
-        #country = details.country
-        country = 'XXX'
+        country=self.gi.country_code_by_addr(ip)
         return(country)
 
     def get_client_ip(self, client):
@@ -124,8 +121,7 @@ class Customauthv2Plugin(b3.plugin.Plugin):
                     else:
                         self.update_auth(client)
                 else:
-                    try: counter = int(cursor.getValue('counter'))
-                    except: counter = 0 
+                    counter = int(cursor.getValue('counter'))
                     if counter == 1:
                         cursor = self.console.storage.query('DELETE FROM customauth WHERE iduser = %s' % client.id)
                         cursor.close()
