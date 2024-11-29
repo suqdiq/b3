@@ -55,13 +55,22 @@ class Bounty(object):
 class Rules(object):
     buying = True
     nades = False
+    superbots = False
     respawndisarm = False
+    restrict_nades = False
+    restrict_disarm = False
+    restrict_crazy = False
+    restrict_slick = False
+    restrict_overclock = False
+    restrict_superbots = False
+    restrict_airjumps = False
+    restrict_curbme = False
 
 class Attachments(object):
     hasattachmentid = None
     isattachmentid = None
 
-class NewmoneyPlugin(b3.plugin.Plugin):
+class GmfunPlugin(b3.plugin.Plugin):
     requiresConfigFile = False
 
     MAX_WALLET_MONEY = 250000000
@@ -137,23 +146,21 @@ class NewmoneyPlugin(b3.plugin.Plugin):
         self.registerEvent(self.console.getEventID('EVT_GAME_SCOREBOARD'), self.onScores) # This requires the updated iourt43 parser
 
         # Register commands
-        self._adminPlugin.registerCommand(self, 'money', 0, self.cmd_money, 'mo')
-        self._adminPlugin.registerCommand(self, 'price', 0, self.cmd_price, 'pr')
-        self._adminPlugin.registerCommand(self, 'pay', 0, self.cmd_pay, 'send')
-        self._adminPlugin.registerCommand(self, 'topmoney', 0, self.cmd_topmoney, 'tm')
-        self._adminPlugin.registerCommand(self, 'resetmoney', 100, self.cmd_resetmoney, 'rm')
-        self._adminPlugin.registerCommand(self, 'typekeyword', 0, self.cmd_typekeyword, 'tkey')
-        self._adminPlugin.registerCommand(self, 'buy', 0, self.cmd_buy, 'b')
-        self._adminPlugin.registerCommand(self, 'kit', 0, self.cmd_kit, 'loadout')
-        self._adminPlugin.registerCommand(self, 'kitlist', 0, self.cmd_kitlist)
-        self._adminPlugin.registerCommand(self, 'ammo', 0, self.cmd_ammo)
-        self._adminPlugin.registerCommand(self, 'clips', 0, self.cmd_clips, 'clip')
-        self._adminPlugin.registerCommand(self, 'maptp', 0, self.cmd_maptp, 'mapteleport')
-        self._adminPlugin.registerCommand(self, 'heal', 0, self.cmd_heal, 'med')
-        self._adminPlugin.registerCommand(self, 'teleport', 0, self.cmd_teleport, 'tp')
-        self._adminPlugin.registerCommand(self, 'buycolour', 0, self.cmd_buycolour) 
-        self._adminPlugin.registerCommand(self, 'prestige', 0, self.cmd_buysupercoin, 'supercoin')
-        self._adminPlugin.registerCommand(self, 'particles', 0, self.cmd_buyparticles, 'particlefx')
+        self._adminPlugin.registerCommand(self, 'invisible', 0, self.cmd_inv, 'inv')
+        self._adminPlugin.registerCommand(self, 'disarm', 0, self.cmd_disarm, 'da')
+        self._adminPlugin.registerCommand(self, 'crazy', 0, self.cmd_crazy)
+        self._adminPlugin.registerCommand(self, 'airjumps', 0, self.cmd_airjumps)
+        self._adminPlugin.registerCommand(self, 'slick', 0, self.cmd_slick)
+        self._adminPlugin.registerCommand(self, 'freeze', 0, self.cmd_freeze)
+        self._adminPlugin.registerCommand(self, 'nuke', 0, self.cmd_nuke)
+        self._adminPlugin.registerCommand(self, 'lowgrav', 0, self.cmd_gravity, 'moon')
+        self._adminPlugin.registerCommand(self, 'slapall', 0, self.cmd_serverslap, 'sall')
+        self._adminPlugin.registerCommand(self, 'nades', 0, self.cmd_nades, 'grenades')
+        self._adminPlugin.registerCommand(self, 'laugh', 0, self.cmd_laugh, 'lol')
+        self._adminPlugin.registerCommand(self, 'overclock', 0, self.cmd_overclock)
+        self._adminPlugin.registerCommand(self, 'curbme', 0, self.cmd_curbme)
+        self._adminPlugin.registerCommand(self, 'superbots', 0, self.cmd_superbots)
+        self._adminPlugin.registerCommand(self, 'attach', 0, self.cmd_attachplayer, 'turret')
 
     def spendit(self,client, price):
       cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % client.id)
@@ -315,6 +322,15 @@ GameTime: 00:09:45
     def onKill(self, event):
         client = event.client
         if client.bot:
+            if self.rules.superbots == True:
+                result = randint(1, 100)
+                if result <= 25:
+                    target = event.target
+                    if target.bot:
+                        return
+                    randommsg = rand.choice(self.bot_messages)
+                    self.console.write('spoof %s say "%s"' % (client.name, randommsg))
+            else:
                 result = randint(1, 100)
                 if result <= 3:
                     target = event.target
@@ -347,6 +363,12 @@ GameTime: 00:09:45
 
         victim = event.target
         if victim.bot:
+            if self.rules.superbots == True:
+                result = randint(1, 100)
+                if result <= 25:
+                    self.console.write("say ^9[^7Bot^9]%s^3: !buy health" % victim.exactName)
+                    self.console.write("addhealth %s 100" % victim.name)
+            else:
                 result = randint(1, 100)
                 if result <= 3:
                     self.console.write("say ^9[^7Bot^9]%s^3: !buy health" % victim.exactName)
@@ -362,6 +384,14 @@ GameTime: 00:09:45
         self.console.write("mod_noWeaponRecoil 0")
         self.console.write("mod_slickSurfaces 0")
         self.console.write("mod_infiniteAirjumps 0")
+        self.rules.restrict_slick = False
+        self.rules.restrict_curbme = False
+        self.rules.restrict_crazy = False
+        self.rules.restrict_disarm = False
+        self.rules.restrict_nades = False
+        self.rules.restrict_overclock = False
+        self.rules.restrict_airjumps = False
+        self.rules.restrict_superbots = False
         self.reset_restrictions()
 
     def onRoundend(self, event):
@@ -384,6 +414,49 @@ GameTime: 00:09:45
             self.console.write("removeweapon %s colt" % client.name)
 
         if client.bot:
+            if self.rules.superbots == True:
+                string1 = 'removeweapon %s deagle' % client.name
+                string2 = 'removeweapon %s beretta' % client.name
+                string3 = 'removeweapon %s magnum' % client.name
+                string4 = 'removeweapon %s glock' % client.name
+                string5 = 'removeweapon %s colt' % client.name
+                string6 = 'gw %s fstod' % client.name
+                string7 = 'gw %s hk69 255 255' % client.name
+                self.console.write(string1)
+                self.console.write(string2)
+                self.console.write(string3)
+                self.console.write(string4)
+                self.console.write(string5)
+                self.console.write(string6)
+                self.console.write(string7)
+#                fin = open(self.GAME_PATH + "superbots.txt", "rt")
+#                data = fin.read()
+#                data = data.replace('XDATA1', string1)
+#                data = data.replace('XDATA2', string2)
+#                data = data.replace('XDATA3', string3)
+#                data = data.replace('XDATA4', string4)
+#                data = data.replace('XDATA5', string5)
+#                data = data.replace('XDATA6', string6)
+#                data = data.replace('XDATA7', string7)
+#                fin.close()
+#                fin = open(self.GAME_PATH + "superbots.txt", "wt")
+#                fin.write(data)
+#                fin.close()
+#                self.console.write('exec superbots.txt')
+#                fin = open(self.GAME_PATH + "superbots.txt", "rt")
+#                data = fin.read()
+#                data = data.replace(string1, 'XDATA1')
+#                data = data.replace(string2, 'XDATA2')
+#                data = data.replace(string3, 'XDATA3')
+#                data = data.replace(string4, 'XDATA4')
+#                data = data.replace(string5, 'XDATA5')
+#                data = data.replace(string6, 'XDATA6')
+#                data = data.replace(string7, 'XDATA7')
+#                fin.close()
+#                fin = open(self.GAME_PATH + "superbots.txt", "wt")
+#                fin.write(data)
+#                fin.close()
+            else:
                 result = randint(1, 100)
                 if result <= 7:
                     botguns = [
@@ -886,6 +959,19 @@ GameTime: 00:09:45
     #                                                                                                                  #
     ####################################################################################################################
  
+    def remove_lowgrav_mode(self, client):
+        self.console.write('bigtext "^5Low-Gravity ^3mode ^7[^1OFF^7]')
+        self.console.write("g_gravity 800")
+
+    def remove_freeze_mode(self, tounfreeze):
+        plyr = tounfreeze
+        self.console.write('freeze %s' % plyr)
+        self.console.write('tell %s "^3You are no longer frozen!"' % plyr)
+
+    def remove_inv_mode(self, client):
+        self.console.write('bigtext "%s is ^2visible ^7again!"' % client.exactName)
+        self.console.write("invisible %s" % client.cid)
+
     def add_spaces(self, value):
         leader = value[0:len(value) % 3].strip()
         return  leader + "." * bool(leader) + ".".join(group[::-1] for group in re.findall("...", value[::-1])[::-1])
@@ -1237,81 +1323,32 @@ GameTime: 00:09:45
                                 minus_reward = 10000000
                                 self.update_minus_location(client, minus_reward)
 
-    def cmd_pay(self, data, client, cmd=None):
-        """
-        !pay <player> <amount>
-        """
-        if not data or len(data.split()) != 2:
-            client.message('^3You must enter ^2!pay <player> <amount>')
-            return
-        self.info('XXX PAY DATA   XXX: ' + data + 'XXX DATA XXX')
-        handler = data.split()
-        self.info('XXX PAY SPLIT IT XXX: '+handler[0])
-        sclient = self._adminPlugin.findClientPrompt(handler[0], client)
-        self.info('XXX PAY SPLIT DONE XXX: ')
-        if not sclient:
-            self.info('XXX PAY XXX: cant find user ')
-            client.message('^3Cant find %s'%handler[0])
-            return
-
-
-        self.info('XXX PAY RE XXX: ')
-        r = re.compile(r'''^\d+$''')
-        m = r.match(handler[1])
-        if not m:
-            self.info('XXX PAY XXX: invalid value')
-            client.message('^1Invalid money value entered: please use only numbers')
-            return
-
-        value = int(handler[1])
-        minus_reward = value
-
-        self.info('XXX PAY getting client money XXX: ')
-        cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % client.id)
-        if cursor.EOF:
-            cursor.close()
-            cmoney = 0
+    def cmd_inv(self, data, client, cmd=None):
+        last = client.var(self, 'delay_inv', 0).value
+        if (self.console.time() - last) < 360:
+            client.message('You can only use this command every 5 minutes')
         else:
-            cmoney = int(cursor.getValue('money'))
-            cursor.close()
-
-        self.info('XXX PAY getting sclient money XXX: ')
-        cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % sclient.id)
-        if cursor.EOF:
-            cursor.close()
-            smoney = 0
-        else:
-            smoney = int(cursor.getValue('money'))
-            cursor.close()
-
-        cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % client.id)
-        if cursor.EOF:
-            client.message('^1You do not have any coin')
-            cursor.close()
-        else:
-            money = int(cursor.getValue('money'))
-            cursor.close()
-            if money >= value:
-                self.info('XXX PAY XXX has enough money')
-                if smoney + value >= self.MAX_WALLET_MONEY:
-                    maxcoins = self.MAX_WALLET_MONEY - smoney
-                    client.message('^3You can send ^5%s ^3a maximum amount of: ^2%s coins' % (sclient.name, maxcoins))
-                else:
-                    self.console.storage.query('UPDATE money SET money = %s WHERE iduser = %s' % (money - value, client.id))
-                    cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % sclient.id)
-                    if cursor.EOF:
-                        cursor = self.console.storage.query('INSERT INTO money (iduser, money) VALUES (%s, %s)' % (sclient.id, value))
-                        cursor.close()
-                    else:
-                        money = int(cursor.getValue('money'))
-                        cursor = self.console.storage.query('UPDATE money SET money = %s WHERE iduser = %s' % (money + value, sclient.id))
-                        cursor.close()
-                        value2 = self.add_spaces(str(value))
-                        client.message('^3You\'ve successfully transferred ^2%s coins' % value2)
-                        sclient.message('^3You\'ve received ^2%s coins ^3from %s' % (value2, client.exactName))
-                        self.update_minus_location(client, minus_reward)
+            cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % client.id)
+            if cursor.EOF:
+                client.message('You don\'t have any coin.')
+                cursor.close()
             else:
-                client.message('You dont have enough coins!')
+                try: money = int(cursor.getValue('money'))
+                except: money = 0
+                cursor.close()
+                if money >= 750000:
+                    self.console.storage.query('UPDATE money SET money = %s WHERE iduser = %s' % (money - 750000, client.id))
+                    self.console.write("invisible %s" % client.cid)
+                    self.console.write('bigtext "%s is gone ^3INVISIBLE!"' % client.exactName)
+                    client.message('You are ^2invisible ^7now! ^3(^260 Seconds^3)')
+                    client.setvar(self, 'delay_inv', self.console.time())
+                    t = Timer(30, self.remove_inv_mode, (client, ))
+                    t.start()
+                    minus_reward = 750000
+                    self.update_minus_location(client, minus_reward)
+                else:
+                    client.message('You don\'t have enough coins')
+
 
 
     def getsupercoins(self, client=None, sclient=None, target=None):
@@ -1831,11 +1868,45 @@ GameTime: 00:09:45
             else:
               client.message('You don\'t have enough coins')
 
+    def cmd_disarm(self, data, client, cmd=None):
+        """
+        !disarm
+        """
+        if self.rules.restrict_disarm is True:
+          client.message('^5!disarm ^3has been used on this map already.')
+          return
+        if self.spendit(client,500000):
+          self.console.write('exec disarm2.txt')
+          self.console.say('%s ^3has ^1disarmed ^5EVERYONE!' % client.exactName)
+          self.console.write('bigtext "%s ^1disarmed ^5EVERYONE!"' % client.exactName)
+          self.rules.buying = False
+          self.rules.respawndisarm = True
+          self.rules.restrict_disarm = True
+          xtimer = Timer(30, self.reset_restrictions)
+          xtimer.start()
+          self.console.say('^5!buy ^3has been ^1disabled ^3 for ^630 seconds.')
+        else:
+          client.message('You dont have enough coins. Your coins are: %s' % money)
+
     def reset_restrictions(self):
         self.rules.buying = True
         self.rules.nades = False
         self.rules.respawndisarm = False
+        self.rules.curbme = False
         self.console.say('^5!buy ^3has been ^2enabled.')
+
+### new commands
+    def cmd_laugh(self, data, client, cmd=None):
+        last = client.var(self, 'delay_laugh', 0).value
+        if (self.console.time() - last) < 60:
+            client.message('You can only use this command once a minute')
+        else:
+          if self.spendit(client,25000):
+            self.console.write("exec lol.txt")
+            self.console.write('bigtext "%s ^3is laughing out loud!' % client.exactName)
+            client.setvar(self, 'delay_laugh', self.console.time())
+          else:
+            client.message('You don\'t have enough coins')
 
     def cmd_heal(self, data, client, cmd=None):
         last = client.var(self, 'delay_healing', 0).value
@@ -1848,6 +1919,243 @@ GameTime: 00:09:45
             client.setvar(self, 'delay_healing', self.console.time())
           else:
             client.message('You don\'t have enough coins')
+
+    def cmd_nuke(self, data, client, cmd=None):
+        m = self._adminPlugin.parseUserCmd(data)
+        if not m:
+            client.message('^7!nuke <player>')
+            return
+
+        sclient = self._adminPlugin.findClientPrompt(m[0], client)
+        if not sclient:
+            return
+
+        last = client.var(self, 'delay_nuke', 0).value
+        if (self.console.time() - last) < 300:
+            client.message('You can only use this command every 5 minutes')
+        else:
+          if self.spendit(client,250000):
+            self.console.write('nuke %s' % sclient.name)
+            client.setvar(self, 'delay_nuke', self.console.time())
+          else:
+            client.message('You don\'t have enough coins')   
+
+    def cmd_freeze(self, data, client, cmd=None):
+        m = self._adminPlugin.parseUserCmd(data)
+        if not m:
+            client.message('^7!freeze <player>')
+            return
+
+        sclient = self._adminPlugin.findClientPrompt(m[0], client)
+        if not sclient:
+            return
+
+        last = client.var(self, 'delay_freeze', 0).value
+        if (self.console.time() - last) < 300:
+            client.message('You can only use this command every 5 minutes')
+        else:
+          if self.spendit(client,550000):
+            self.console.write('freeze %s' % sclient.name)
+            tounfreeze = sclient.name
+            client.message('^3You\'ve ^5frozen ^3%s for ^630 seconds!' % sclient.name)
+            sclient.message('^3You were ^5frozen ^3by %s for ^630 seconds' % client.exactName)
+            client.setvar(self, 'delay_freeze', self.console.time())
+            t = Timer(30, self.remove_freeze_mode, (tounfreeze, ))
+            t.start()
+          else:
+            client.message('You don\'t have enough coins')
+
+    def cmd_serverslap(self, data, client, cmd=None):
+        last = client.var(self, 'delay_serverslap', 0).value
+        if (self.console.time() - last) < 1200:
+            client.message('^3You can only use this command every 20 minutes')
+        else:
+          if self.spendit(client,1000000):
+            self.console.say( "%s ^1slapped everyone! ^3Say thanks!!" % client.exactName)
+            self.console.write("exec slap.txt")
+            self.console.write('bigtext "%s ^1slapped ^3everyone!' % client.exactName)
+            client.setvar(self, 'delay_serverslap', self.console.time())
+          else:
+            client.message('You don\'t have enough coins')
+
+    def cmd_nades(self, data, client, cmd=None):
+        cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % client.id)
+        if self.rules.restrict_nades is True:
+            client.message('^5!nades ^3has been used on this map already.')
+            cursor.close()
+            return
+        else:
+          if self.spendit(client,500000):
+            self.console.write("exec nades.txt")
+            self.console.write('bigtext "%s ^2bought ^5nades for everbody ^3for ^2500.000 coins!' % client.exactName)
+            self.rules.buying = False
+            self.rules.restrict_nades = True
+            self.rules.respawndisarm = True
+            self.rules.nades = True
+            xtimer = Timer(60, self.reset_restrictions)
+            xtimer.start()
+            self.console.say('^5!buy ^3has been ^1disabled ^3 for ^660 seconds.')
+          else:
+            client.message('You don\'t have enough coins')
+
+    def cmd_slick(self, data, client, cmd=None):
+        cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % client.id)
+        if self.rules.restrict_slick is True:
+            client.message('^5!slick ^3has been used on this map already.')
+            cursor.close()
+            return
+        if self.spendit(client,500000):
+          self.console.write("mod_slickSurfaces 1")
+          self.console.write('bigtext "^5Icy ^7Surfaces [^2ON^7]"')
+          self.rules.restrict_slick = True
+          xtimer = Timer(30, self.reset_slick)
+          xtimer.start()
+          self.console.write('^5!buy ^3has been ^1disabled ^3 for ^630 seconds.')
+        else:
+          client.message('You don\'t have enough coins')
+
+    def reset_slick(self):
+        self.console.write("mod_slickSurfaces 0")
+        self.console.write('bigtext "^5Icy ^7Surfaces [1OFF^7]"')
+
+    def cmd_airjumps(self, data, client, cmd=None):
+        cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % client.id)
+        if self.rules.restrict_airjumps is True:
+            client.message('^5!airjumps ^3has been used on this map already.')
+            cursor.close()
+            return
+        if cursor.EOF:
+            client.message('You don\'t have any coin.')
+            cursor.close()
+        else:
+            money = int(cursor.getValue('money'))
+            cursor.close()
+            if money >= 1000000:
+                self.console.storage.query('UPDATE money SET money = %s WHERE iduser = %s' % (money - 1000000, client.id))
+                minus_reward = 1000000
+                self.update_minus_location(client, minus_reward)
+                self.console.write("mod_infiniteAirjumps 1")
+                self.console.write('bigtext "^2JUMP ^5JUMP ^6JUMP"')
+                self.rules.restrict_airjumps = True
+                xztimer = Timer(60, self.reset_airjumps)
+                xztimer.start()
+            else:
+                client.message('You don\'t have enough coins')
+
+    def reset_airjumps(self):
+        self.console.write("mod_infiniteAirjumps 0")
+
+    def cmd_crazy(self, data, client, cmd=None):
+        cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % client.id)
+        if self.rules.restrict_crazy is True:
+            client.message('^5!crazy ^3has been used on this map already.')
+            cursor.close()
+            return
+        if cursor.EOF:
+            client.message('You don\'t have any coin.')
+            cursor.close()
+        else:
+            money = int(cursor.getValue('money'))
+            cursor.close()
+            if money >= 1000000:
+                self.console.storage.query('UPDATE money SET money = %s WHERE iduser = %s' % (money - 1000000, client.id))
+                minus_reward = 1000000
+                self.update_minus_location(client, minus_reward)
+                self.console.write("exec crazy.txt")
+                self.console.write('bigtext "%s ^3wants ^5everyone ^3to go ^2C^5r^3a^6z^7y' % client.exactName)
+                self.rules.restrict_crazy = True
+                xtimer = Timer(60, self.reset_crazy)
+                xtimer.start()
+            else:
+                client.message('You don\'t have enough coins')
+
+    def reset_crazy(self):
+        self.console.write("exec resetcrazy.txt")
+
+    def cmd_superbots(self, data, client, cmd=None):
+        cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % client.id)
+        if self.rules.restrict_superbots is True:
+            client.message('^5!superbots ^3has been used on this map already.')
+            cursor.close()
+            return
+        if cursor.EOF:
+            client.message('You don\'t have any coin.')
+            cursor.close()
+        else:
+            money = int(cursor.getValue('money'))
+            cursor.close()
+            if money >= 500000:
+                self.console.storage.query('UPDATE money SET money = %s WHERE iduser = %s' % (money - 500000, client.id))
+                minus_reward = 500000
+                self.update_minus_location(client, minus_reward)
+                self.rules.restrict_superbots = True
+                zutimer = Timer(60, self.reset_superbots)
+                zutimer.start()
+                self.rules.superbots = True
+                self.console.write('bigtext "^6SUPERBOTS ^3will now spawn for ^51 Minute"')
+                for client in self.console.clients.getList():
+                    if client.bot:
+                        self.console.write("smite %s" % client.cid)
+            else:
+                client.message('You don\'t have enough coins')
+
+    def cmd_curbme(self, data, client, cmd=None):
+        cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % client.id)
+        if self.rules.restrict_curbme is True:
+            client.message('^5!curbme ^3has been used on this map already.')
+            cursor.close()
+            return
+        if cursor.EOF:
+            client.message('You don\'t have any coin.')
+            cursor.close()
+        else:
+            money = int(cursor.getValue('money'))
+            cursor.close()
+            if money >= 500000:
+                self.console.storage.query('UPDATE money SET money = %s WHERE iduser = %s' % (money - 500000, client.id))
+                minus_reward = 500000
+                self.update_minus_location(client, minus_reward)
+                self.console.write("gw %s hk69 100 255"%client.cid)
+                self.console.write("gw %s smoke 100 0"%client.cid)
+                self.console.write("gw %s h3 100 0"%client.cid)
+                self.console.write("gw %s vest"%client.cid)
+                self.console.write("gw %s helmet"%client.cid)
+                self.console.write("gw %s laser"%client.cid)
+                self.console.write("gw %s silencer"%client.cid)
+                self.rules.restrict_curbme = True
+                #utimer = Timer(30, self.reset_overclock)
+                #utimer.start()
+            else:
+                client.message('You don\'t have enough coins')
+
+    def cmd_overclock(self, data, client, cmd=None):
+        cursor = self.console.storage.query('SELECT * FROM money WHERE iduser = %s' % client.id)
+        if self.rules.restrict_overclock is True:
+            client.message('^5!overclock ^3has been used on this map already.')
+            cursor.close()
+            return
+        if cursor.EOF:
+            client.message('You don\'t have any coin.')
+            cursor.close()
+        else:
+            money = int(cursor.getValue('money'))
+            cursor.close()
+            if money >= 500000:
+                self.console.storage.query('UPDATE money SET money = %s WHERE iduser = %s' % (money - 500000, client.id))
+                minus_reward = 500000
+                self.update_minus_location(client, minus_reward)
+                self.console.write("exec overclock.txt")
+                self.rules.restrict_overclock = True
+                utimer = Timer(60, self.reset_overclock)
+                utimer.start()
+            else:
+                client.message('You don\'t have enough coins')
+
+    def reset_superbots(self):
+        self.rules.superbots = False
+
+    def reset_overclock(self):
+        self.console.write("exec resetoverclock.txt")
 
     def cmd_teleport(self, data, client, cmd=None):
         """

@@ -82,6 +82,7 @@ class BetterwelcomePlugin(b3.plugin.Plugin):
         uniqueId = client.id
 
         # Levels
+        level = ''
         if client.maxLevel == 1 or client.maxLevel == 0:
             level = "^7[User]"
         if client.maxLevel == 2:

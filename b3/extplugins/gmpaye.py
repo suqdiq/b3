@@ -61,7 +61,7 @@ class Attachments(object):
     hasattachmentid = None
     isattachmentid = None
 
-class NewmoneyPlugin(b3.plugin.Plugin):
+class PayAsYouEarnPlugin(b3.plugin.Plugin):
     requiresConfigFile = False
 
     MAX_WALLET_MONEY = 250000000

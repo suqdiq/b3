@@ -43,7 +43,9 @@ class FixbotsPlugin(b3.plugin.Plugin):
             return
 
         # Register events
-        self.registerEvent(self.console.getEventID('EVT_CLIENT_AUTH'), self.onAuth)
+        #self.registerEvent(self.console.getEventID('EVT_CLIENT_AUTH'), self.onAuth)
+        self.registerEvent(self.console.getEventID('EVT_CLIENT_JOIN'), self.onAuth)
+        
         # Register commands
 
     def onAuth(self, event):
